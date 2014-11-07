@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+*filter
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-A INPUT -i lo -j ACCEPT
+{% if iptables_icmp_enabled %}
+-A INPUT -p icmp -j ACCEPT
+{% endif %}
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+{% if iptables_ssh_enabled %}
+-A INPUT -p tcp -s {{ iptables_ssh_source }} --dport {{ iptables_ssh_port }} -m comment --comment "{{ iptables_ssh_comment }}"-j ACCEPT
+{% endif %}
+{% if iptables_zabbix_enabled %}
+-A INPUT -p tcp -s {{ iptables_zabbix_source }} --dport {{ iptables_zabbix_port }} -m comment --comment "{{ iptables_zabbix_comment }}" -j ACCEPT
+{% endif %}
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT

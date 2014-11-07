@@ -1,2 +1,14 @@
 ---
 # defaults file for iptables
+
+iptables_icmp_enabled: True
+
+iptables_ssh_source: 0.0.0.0/0
+iptables_ssh_port: 22
+iptables_ssh_comment: OpenSSH
+iptables_ssh_enabled: True
+
+iptables_zabbix_source: 0.0.0.0/0
+iptables_zabbix_port: 10050
+iptables_zabbix_comment: Zabbix agent
+iptables_zabbix_enabled: False
