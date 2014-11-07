@@ -11,8 +11,8 @@
 {% if iptables_ssh_enabled %}
 -A INPUT -p tcp -s {{ iptables_ssh_source }} --dport {{ iptables_ssh_port }} -m comment --comment "{{ iptables_ssh_comment }}"-j ACCEPT
 {% endif %}
-{% if iptables_zabbix_enabled %}
--A INPUT -p tcp -s {{ iptables_zabbix_source }} --dport {{ iptables_zabbix_port }} -m comment --comment "{{ iptables_zabbix_comment }}" -j ACCEPT
+{% if iptables_zabbix_agent_enabled %}
+-A INPUT -p tcp -s {{ iptables_zabbix_agent_source }} --dport {{ iptables_zabbix_agent_port }} -m comment --comment "{{ iptables_zabbix_agent_comment }}" -j ACCEPT
 {% endif %}
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
 -A FORWARD -j REJECT --reject-with icmp-host-prohibited
