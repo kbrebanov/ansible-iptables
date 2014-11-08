@@ -10,7 +10,10 @@
 {% endif %}
 -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 {% if iptables_ssh_enabled %}
--A INPUT -p tcp -m state --state NEW -s {{ iptables_ssh_source }} --dport {{ iptables_ssh_port }} -m comment --comment "{{ iptables_ssh_comment }}"-j ACCEPT
+-A INPUT -p tcp -m state --state NEW -s {{ iptables_ssh_source }} --dport {{ iptables_ssh_port }} -m comment --comment "{{ iptables_ssh_comment }}" -j ACCEPT
+{% endif %}
+{% if iptables_mysql_enabled %}
+-A INPUT -p tcp -m state --state NEW -s {{ iptables_mysql_source }} --dport {{ iptables_mysql_port }} -m comment --comment "{{ iptables_mysql_comment }}" -j ACCEPT
 {% endif %}
 {% if iptables_zabbix_agent_enabled %}
 -A INPUT -p tcp -m state --state NEW -s {{ iptables_zabbix_agent_source }} --dport {{ iptables_zabbix_agent_port }} -m comment --comment "{{ iptables_zabbix_agent_comment }}" -j ACCEPT

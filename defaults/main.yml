@@ -12,3 +12,8 @@ iptables_zabbix_agent_source: 0.0.0.0/0
 iptables_zabbix_agent_port: 10050
 iptables_zabbix_agent_comment: Zabbix agent
 iptables_zabbix_agent_enabled: False
+
+iptables_mysql_source: 0.0.0.0/0
+iptables_mysql_port: 3306
+iptables_mysql_comment: MySQL
+iptables_mysql_enabled: False
