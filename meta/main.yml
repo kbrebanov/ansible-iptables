@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  author: your name
-  description: 
-  company: your company (optional)
+  author: Kevin Brebanov
+  description: Configures iptables.
+  company:
   # Some suggested licenses:
   # - BSD (default)
   # - MIT
@@ -10,19 +10,19 @@ galaxy_info:
   # - GPLv3
   # - Apache
   # - CC-BY
-  license: license (GPLv2, CC-BY, etc)
-  min_ansible_version: 1.2
+  license: BSD
+  min_ansible_version: 1.4
   #
   # Below are all platforms currently available. Just uncomment
-  # the ones that apply to your role. If you don't see your 
+  # the ones that apply to your role. If you don't see your
   # platform on this list, let us know and we'll get it added!
   #
-  #platforms:
-  #- name: EL
+  platforms:
+  - name: EL
   #  versions:
   #  - all
   #  - 5
-  #  - 6
+    - 6
   #  - 7
   #- name: GenericUNIX
   #  versions:
@@ -112,7 +112,7 @@ galaxy_info:
   #- database:sql
   #- development
   #- monitoring
-  #- networking
+  - networking
   #- packaging
   #- system
   #- web
@@ -121,4 +121,3 @@ dependencies: []
   # dependencies available via galaxy should be listed here.
   # Be sure to remove the '[]' above if you add dependencies
   # to this list.
-  
