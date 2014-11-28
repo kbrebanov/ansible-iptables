@@ -1,31 +1,60 @@
-Role Name
-=========
+iptables
+========
 
-A brief description of the role goes here.
+Installs and configures iptables firewall.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role requires Ansible 1.4 or higher.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+    # Allow ICMP packets (ping)
+    iptables_icmp_enabled: True
+
+    # OpenSSH rules
+    iptables_ssh_source: 0.0.0.0/0
+    iptables_ssh_port: 22
+    iptables_ssh_comment: OpenSSH
+    iptables_ssh_enabled: True
+
+    # Zabbix agent rules
+    iptables_zabbix_agent_source: 0.0.0.0/0
+    iptables_zabbix_agent_port: 10050
+    iptables_zabbix_agent_comment: Zabbix agent
+    iptables_zabbix_agent_enabled: False
+
+    # MySQL rules
+    iptables_mysql_source: 0.0.0.0/0
+    iptables_mysql_port: 3306
+    iptables_mysql_comment: MySQL
+    iptables_mysql_enabled: False
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+1) Install and configure iptables to allow ICMP and OpenSSH
 
-    - hosts: servers
+    - hosts: all
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: iptables }
+
+2) Install and configure iptables to block ICMP and allow OpenSSH
+
+    - hosts: all
+      roles:
+         - { role: iptables, iptables_icmp_enabled: False }
+
+3) Install and configure iptables to block ICMP, allow OpenSSH and MySQL
+
+    - hosts: all
+      roles:
+         - { role: iptables, iptables_icmp_enabled: False, iptables_mysql_enabled: True}
 
 License
 -------
@@ -35,4 +64,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Kevin Brebanov
