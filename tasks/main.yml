@@ -1,6 +1,10 @@
 ---
 # tasks file for iptables
 
+- name: Install iptables
+  yum: name=iptables state=present
+  tags: iptables
+
 - name: Create iptables configuration
   template: >
     src=iptables.j2
@@ -9,4 +13,8 @@
     group=root
     mode=0600
   notify: restart iptables
+  tags: iptables
+
+- name: Start iptables and enable on boot
+  service: name=iptables state=started enabled=yes
   tags: iptables
