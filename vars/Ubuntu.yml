@@ -1,0 +1,8 @@
+---
+# vars file for iptables (Ubuntu specific)
+
+iptables_packages:
+  - iptables
+  - iptables-persistent
+iptables_service_name: iptables-persistent
+iptables_configuration: /etc/iptables/rules.v4

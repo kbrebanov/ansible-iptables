@@ -3,17 +3,17 @@
 
 iptables_icmp_enabled: True
 
+iptables_ssh_enabled: True
 iptables_ssh_source: 0.0.0.0/0
 iptables_ssh_port: 22
 iptables_ssh_comment: OpenSSH
-iptables_ssh_enabled: True
 
+iptables_zabbix_agent_enabled: False
 iptables_zabbix_agent_source: 0.0.0.0/0
 iptables_zabbix_agent_port: 10050
 iptables_zabbix_agent_comment: Zabbix agent
-iptables_zabbix_agent_enabled: False
 
+iptables_mysql_enabled: False
 iptables_mysql_source: 0.0.0.0/0
 iptables_mysql_port: 3306
 iptables_mysql_comment: MySQL
-iptables_mysql_enabled: False

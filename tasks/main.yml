@@ -1,20 +1,28 @@
 ---
 # tasks file for iptables
 
-- name: Install iptables
-  yum: name=iptables state=present
+- name: Include distribution specific variables
+  include_vars: "{{ ansible_distribution }}.yml"
+  tags: iptables
+
+- include: CentOS.yml
+  when: ansible_distribution == "CentOS"
+  tags: iptables
+
+- include: Ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
   tags: iptables
 
 - name: Create iptables configuration
   template: >
     src=iptables.j2
-    dest=/etc/sysconfig/iptables
+    dest={{ iptables_configuration }}
     owner=root
     group=root
     mode=0600
   notify: restart iptables
   tags: iptables
 
-- name: Start iptables and enable on boot
-  service: name=iptables state=started enabled=yes
+- name: Ensure iptables is started and enabled on boot
+  service: name={{ iptables_service_name }} state=started enabled=yes
   tags: iptables

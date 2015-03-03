@@ -2,5 +2,5 @@
 # handlers file for iptables
 
 - name: restart iptables
-  service: name=iptables state=restarted
+  service: name={{ iptables_service_name }} state=restarted
   tags: iptables
