@@ -5,3 +5,7 @@
   apt: name={{ item }} state=present update_cache=yes
   with_items: iptables_packages
   tags: iptables
+
+- name: Ensure iptables is started and enabled on boot
+  service: name={{ iptables_service_name }} enabled=yes
+  tags: iptables
