@@ -11,50 +11,32 @@ This role requires Ansible 1.4 or higher.
 Role Variables
 --------------
 
-    # Allow ICMP packets (ping)
-    iptables_icmp_enabled: True
-
-    # OpenSSH rules
-    iptables_ssh_source: 0.0.0.0/0
-    iptables_ssh_port: 22
-    iptables_ssh_comment: OpenSSH
-    iptables_ssh_enabled: True
-
-    # Zabbix agent rules
-    iptables_zabbix_agent_source: 0.0.0.0/0
-    iptables_zabbix_agent_port: 10050
-    iptables_zabbix_agent_comment: Zabbix agent
-    iptables_zabbix_agent_enabled: False
-
-    # MySQL rules
-    iptables_mysql_source: 0.0.0.0/0
-    iptables_mysql_port: 3306
-    iptables_mysql_comment: MySQL
-    iptables_mysql_enabled: False
+| Name                  | Default                                                                       | Description                                   |
+|-----------------------|-------------------------------------------------------------------------------|-----------------------------------------------|
+| iptables_icmp_enabled | true                                                                          | Enable/disable ICMP                           |
+| iptables_rules        | [{protocol: tcp, source_addresses: 0.0.0.0/0, port: 22, comment: "OpenSSH" }] | Array of firewall rules represented as hashes |
 
 Dependencies
 ------------
 
+None
+
 Example Playbook
 ----------------
 
-1) Install and configure iptables to allow ICMP and OpenSSH
+Install and configure iptables to allow ICMP and OpenSSH
+```
+- hosts: all
+  roles:
+    - { role: kbrebanov.iptables }
+```
 
-    - hosts: all
-      roles:
-         - { role: iptables }
-
-2) Install and configure iptables to block ICMP and allow OpenSSH
-
-    - hosts: all
-      roles:
-         - { role: iptables, iptables_icmp_enabled: False }
-
-3) Install and configure iptables to block ICMP, allow OpenSSH and MySQL
-
-    - hosts: all
-      roles:
-         - { role: iptables, iptables_icmp_enabled: False, iptables_mysql_enabled: True}
+Install and configure iptables to disallow ICMP, allow OpenSSH and HTTP
+```
+- hosts: all
+  roles:
+    - { role: kbrebanov.iptables, iptables_icmp_enalbed: false, iptables_rules: [{protocol: tcp, source_addresses: 0.0.0.0/0, port: 22, comment: "OpenSSH"}, {protocol: tcp, source_addresses: 0.0.0.0/0, port: 80, comment: "HTTP"}] }
+```
 
 License
 -------
