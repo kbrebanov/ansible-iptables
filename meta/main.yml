@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Kevin Brebanov
-  description: Configures iptables.
+  description: Installs and configures iptables.
   company:
   # Some suggested licenses:
   # - BSD (default)

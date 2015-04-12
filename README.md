@@ -1,7 +1,7 @@
 iptables
 ========
 
-Installs and configures iptables firewall.
+Installs and configures iptables.
 
 Requirements
 ------------
