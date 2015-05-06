@@ -1,6 +1,8 @@
 iptables
 ========
 
+[![Ansible Galaxy](https://img.shields.io/badge/galaxy-kbrebanov.iptables-660198.svg)](https://galaxy.ansible.com/list#/roles/3393)
+
 Installs and configures iptables.
 
 Requirements
