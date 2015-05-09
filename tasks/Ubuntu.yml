@@ -2,6 +2,6 @@
 # tasks file for iptables (Ubuntu specific)
 
 - name: Install iptables packages
-  apt: name={{ item }} state=present update_cache=yes
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
   with_items: iptables_packages
   tags: iptables
