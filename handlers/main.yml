@@ -3,4 +3,5 @@
 
 - name: restart iptables
   service: name={{ iptables_service_name }} state=restarted
+  changed_when: config_result|changed
   tags: iptables
