@@ -1,6 +1,10 @@
 ---
 # defaults file for iptables
 
+iptables_input_policy: "DROP"
+iptables_forward_policy: "DROP"
+iptables_output_policy: "ACCEPT"
+
 iptables_icmp_enabled: true
 
 iptables_rules:
@@ -8,3 +12,5 @@ iptables_rules:
     source_addresses: 0.0.0.0/0
     port: 22
     comment: "OpenSSH"
+
+iptables_port_forward_rules: []
