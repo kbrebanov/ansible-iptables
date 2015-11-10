@@ -43,7 +43,9 @@ COMMIT
 
 *nat
 :PREROUTING ACCEPT [0:0]
+{% if ansible_distribution != 'CentOS' %}
 :INPUT ACCEPT [0:0]
+{% endif %}
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
 
