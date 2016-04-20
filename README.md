@@ -1,7 +1,7 @@
 iptables
 ========
 
-[![Ansible Role](https://img.shields.io/ansible/role/3393.svg)](https://galaxy.ansible.com/list#/roles/3393)
+[![Build Status](https://travis-ci.org/kbrebanov/ansible-iptables.svg?branch=master)](https://travis-ci.org/kbrebanov/ansible-iptables)
 
 Installs and configures iptables.
 
