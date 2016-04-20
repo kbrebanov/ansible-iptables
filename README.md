@@ -8,13 +8,13 @@ Installs and configures iptables.
 Requirements
 ------------
 
-This role requires Ansible 1.4 or higher.
+This role requires Ansible 1.9 or higher.
 
 Role Variables
 --------------
 
 | Name                        | Default                                                                       | Description                                       |
-|-----------------------------|-------------------------------------------------------------------------------|---------------------------------------------------|
+|:----------------------------|:------------------------------------------------------------------------------|:--------------------------------------------------|
 | iptables_input_policy       | "DROP"                                                                        | Default input policy                              |
 | iptables_forward_policy     | "DROP"                                                                        | Default forward policy                            |
 | iptables_output_policy      | "ACCEPT"                                                                      | Default output policy                             |
