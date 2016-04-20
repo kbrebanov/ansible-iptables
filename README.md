@@ -32,14 +32,14 @@ Example Playbook
 ----------------
 
 Install and configure iptables to allow ICMP and OpenSSH
-```
+```yaml
 - hosts: all
   roles:
     - kbrebanov.iptables
 ```
 
 Install and configure iptables to disallow ICMP, allow OpenSSH and HTTP
-```
+```yaml
 - hosts: all
   vars:
     iptables_icmp_enalbed: false
@@ -57,7 +57,7 @@ Install and configure iptables to disallow ICMP, allow OpenSSH and HTTP
 ```
 
 Install and configure iptables with a port forward rule for HTTP
-```
+```yaml
 - hosts: all
   vars:
     iptables_rules:
