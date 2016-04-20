@@ -2,6 +2,11 @@
 # tasks file for iptables (CentOS specific)
 
 - name: Install iptables packages
-  yum: name={{ item }} state=present
-  with_items: iptables_packages
-  tags: iptables
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ iptables_packages }}"
+  tags:
+    - iptables
