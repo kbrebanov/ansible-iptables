@@ -1,0 +1,4 @@
+---
+# vars file for iptables (Ubuntu Trusty specific)
+
+iptables_service_name: iptables-persistent

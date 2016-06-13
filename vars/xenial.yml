@@ -1,0 +1,4 @@
+---
+# vars file for iptables (Ubuntu Xenial specific)
+
+iptables_service_name: netfilter-persistent
