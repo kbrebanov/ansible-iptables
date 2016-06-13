@@ -15,9 +15,12 @@ Role Variables
 
 | Name                        | Default                                                                       | Description                                       |
 |:----------------------------|:------------------------------------------------------------------------------|:--------------------------------------------------|
-| iptables_input_policy       | "DROP"                                                                        | Default input policy                              |
-| iptables_forward_policy     | "DROP"                                                                        | Default forward policy                            |
-| iptables_output_policy      | "ACCEPT"                                                                      | Default output policy                             |
+| iptables_input_policy       | "DROP"                                                                        | IPv4 default input policy                         |
+| iptables_forward_policy     | "DROP"                                                                        | IPv4 default forward policy                       |
+| iptables_output_policy      | "ACCEPT"                                                                      | IPv4 default output policy                        |
+| iptables6_input_policy      | "DROP"                                                                        | IPv6 default input policy                         |
+| iptables6_forward_policy    | "DROP"                                                                        | IPv6 default forward policy                       |
+| iptables6_output_policy     | "ACCEPT"                                                                      | IPv6 default output policy                        |
 | iptables_icmp_enabled       | true                                                                          | Enable/disable ICMP                               |
 | iptables_rules              | [{protocol: tcp, source_addresses: 0.0.0.0/0, port: 22, comment: "OpenSSH" }] | Array of firewall rules represented as hashes     |
 | iptables_port_forward_rules | []                                                                            | Array of port forward rules represented as hashes |

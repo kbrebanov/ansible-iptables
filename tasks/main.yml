@@ -36,6 +36,20 @@
   tags:
     - iptables
 
+- name: Create iptables6 configuration
+  become: yes
+  template:
+    src: iptables6.j2
+    dest: "{{ iptables6_configuration }}"
+    owner: root
+    group: root
+    mode: 0600
+  register: config_result
+  notify:
+    - restart iptables
+  tags:
+    - iptables
+
 - name: Ensure iptables is started and enabled on boot
   become: yes
   service:

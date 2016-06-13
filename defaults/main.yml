@@ -5,6 +5,10 @@ iptables_input_policy: "DROP"
 iptables_forward_policy: "DROP"
 iptables_output_policy: "ACCEPT"
 
+iptables6_input_policy: "DROP"
+iptables6_forward_policy: "DROP"
+iptables6_output_policy: "ACCEPT"
+
 iptables_icmp_enabled: true
 
 iptables_rules:

@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+*filter
+:INPUT {{ iptables_input_policy }} [0:0]
+:FORWARD {{ iptables_forward_policy }} [0:0]
+:OUTPUT {{ iptables_output_policy }} [0:0]
+
+COMMIT
