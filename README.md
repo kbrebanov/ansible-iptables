@@ -13,17 +13,24 @@ This role requires Ansible 1.9 or higher.
 Role Variables
 --------------
 
-| Name                        | Default                                                                       | Description                                       |
-|:----------------------------|:------------------------------------------------------------------------------|:--------------------------------------------------|
-| iptables_input_policy       | "DROP"                                                                        | IPv4 default input policy                         |
-| iptables_forward_policy     | "DROP"                                                                        | IPv4 default forward policy                       |
-| iptables_output_policy      | "ACCEPT"                                                                      | IPv4 default output policy                        |
-| iptables6_input_policy      | "DROP"                                                                        | IPv6 default input policy                         |
-| iptables6_forward_policy    | "DROP"                                                                        | IPv6 default forward policy                       |
-| iptables6_output_policy     | "ACCEPT"                                                                      | IPv6 default output policy                        |
-| iptables_icmp_enabled       | true                                                                          | Enable/disable ICMP                               |
-| iptables_rules              | [{protocol: tcp, source_addresses: 0.0.0.0/0, port: 22, comment: "OpenSSH" }] | Array of firewall rules represented as hashes     |
-| iptables_port_forward_rules | []                                                                            | Array of port forward rules represented as hashes |
+| Name                             | Default                                                                               | Description                                 |
+|:---------------------------------|:--------------------------------------------------------------------------------------|:--------------------------------------------|
+| iptables_filter_input_policy     | drop                                                                                  | IPv4 default filter input policy            |
+| iptables_filter_forward_policy   | drop                                                                                  | IPv4 default filter forward policy          |
+| iptables_filter_output_policy    | accept                                                                                | IPv4 default filter output policy           |
+| iptables_filter_rules            | [{protocol: tcp, source_address: 0.0.0.0/0, destination_port: 22, comment: OpenSSH }] | Array of filter rules represented as hashes |
+| iptables_nat_prerouting_policy   | drop                                                                                  | IPv4 default nat prerouting policy          |
+| iptables_nat_input_policy        | accept                                                                                | IPv4 default nat input policy               |
+| iptables_nat_output_policy       | accept                                                                                | IPv4 default nat output policy              |
+| iptables_nat_postrouting_policy  | drop                                                                                  | IPv4 default nat postrouting policy         |
+| iptables_nat_rules               | []                                                                                    | Array of nat rules represented as hashes    |
+| iptables6_filter_input_policy    | drop                                                                                  | IPv6 default filter input policy            |
+| iptables6_filter_forward_policy  | drop                                                                                  | IPv6 default filter forward policy          |
+| iptables6_filter_output_policy   | accept                                                                                | IPv6 default filter output policy           |
+| iptables6_nat_prerouting_policy  | drop                                                                                  | IPv6 default nat prerouting policy          |
+| iptables6_nat_input_policy       | accept                                                                                | IPv6 default nat input policy               |
+| iptables6_nat_output_policy      | accept                                                                                | IPv6 default nat output policy              |
+| iptables6_nat_postrouting_policy | drop                                                                                  | IPv6 default nat postrouting policy         |
 
 Dependencies
 ------------
@@ -44,16 +51,17 @@ Install and configure iptables to disallow ICMP, allow OpenSSH and HTTP
 ```yaml
 - hosts: all
   vars:
-    iptables_icmp_enalbed: false
-    iptables_rules:
-      - protocol: tcp
-        source_addresses: 0.0.0.0/0
+    iptables_filter_rules:
+      - chain: input
+        protocol: tcp
+        source_address: 0.0.0.0/0
         port: 22
-        comment: "OpenSSH"
-      - protocol: tcp
-        source_addresses: 0.0.0.0/0
+        comment: OpenSSH
+      - chain: input
+        protocol: tcp
+        source_address: 0.0.0.0/0
         port: 80
-        comment: "HTTP"
+        comment: HTTP
   roles:
     - kbrebanov.iptables
 ```
@@ -62,15 +70,17 @@ Install and configure iptables with a port forward rule for HTTP
 ```yaml
 - hosts: all
   vars:
-    iptables_rules:
-      - protocol: tcp
-        source_addresses: 0.0.0.0/0
-        port: 80
-        comment: "HTTP"
+    iptables_filter_rules:
+      - chain: input
+        protocol: tcp
+        source_address: 0.0.0.0/0
+        destination_port: 80
+        comment: HTTP
     iptables_port_forward_rules:
-      - protocol: tcp
-        port: 80
-        to_ip: 192.168.1.54
+      - chain: prerouting
+        protocol: tcp
+        destination_port: 80
+        to_destination: 192.168.1.54
         to_port: 8080
   roles:
     - kbrebanov.iptables

@@ -1,70 +1,96 @@
 # {{ ansible_managed }}
 
 *filter
-:INPUT {{ iptables_input_policy }} [0:0]
-:FORWARD {{ iptables_forward_policy }} [0:0]
-:OUTPUT {{ iptables_output_policy }} [0:0]
-
-:UDP - [0:0]
-:TCP - [0:0]
-:ICMP - [0:0]
-
-{% for rule in iptables_rules %}
-{% if rule.protocol == "tcp" %}
--A TCP -p tcp -s {{ rule.source_addresses|default("0.0.0.0/0") }} --dport {{ rule.port|default("0:65535") }} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
-{% endif %}
-{% if rule.protocol == "udp" %}
--A UDP -p udp -s {{ rule.source_addresses|default("0.0.0.0/0") }} --dport {{ rule.port|default("0:65535") }} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
-{% endif %}
-{% if rule.protocol == "any" %}
--A TCP -p tcp -s {{ rule.source_addresses|default("0.0.0.0/0") }} --dport {{ rule.port|default("0:65535") }} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
--A UDP -p udp -s {{ rule.source_addresses|default("0.0.0.0/0") }} --dport {{ rule.port|default("0:65535") }} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
-{% endif %}
-{% endfor %}
-
-{% if iptables_icmp_enabled %}
--A INPUT -p icmp --icmp-type redirect -j DROP
--A INPUT -p icmp -j ACCEPT
-{% endif %}
+:INPUT {{ iptables_filter_input_policy|upper }} [0:0]
+:FORWARD {{ iptables_filter_forward_policy|upper }} [0:0]
+:OUTPUT {{ iptables_filter_output_policy|upper }} [0:0]
 
 -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 -A INPUT -i lo -j ACCEPT
 -A INPUT -m conntrack --ctstate INVALID -j DROP
+{% for rule in iptables_filter_rules %}
+{% if rule.chain|lower == "input" %}
+{% if rule.protocol|lower == "tcp" %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} -s {{ rule.source_address|default("0.0.0.0/0") }} --sport {{ rule.source_port|default("0:65535") }} -d {{ rule.destination_address|default("0.0.0.0/0") }} --dport {{ rule.destination_port|default("0:65535") }} --syn -m conntrack --ctstate NEW {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% elif rule.protocol|lower == "udp" %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} -s {{ rule.source_address|default("0.0.0.0/0") }} --sport {{ rule.source_port|default("0:65535") }} -d {{ rule.destination_address|default("0.0.0.0/0") }} --dport {{ rule.destination_port|default("0:65535") }} -m conntrack --ctstate NEW {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% elif rule.protocol|lower == "icmp" %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} -m conntrack --ctstate NEW {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% endif %}
+{% endif %}
+{% endfor %}
 
--A INPUT -p udp -m conntrack --ctstate NEW -j UDP
--A INPUT -p tcp --syn -m conntrack --ctstate NEW -j TCP
--A INPUT -p icmp -m conntrack --ctstate NEW -j ICMP
+-A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+{% for rule in iptables_filter_rules %}
+{% if rule.chain|lower == "forward" %}
+{% if rule.protocol|lower == "tcp" or rule.protocol|lower == "udp" %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} -s {{ rule.source_address|default("0.0.0.0/0") }} --sport {{ rule.source_port|default("0:65535") }} -d {{ rule.destination_address|default("0.0.0.0/0") }} --dport {{ rule.destination_port|default("0:65535") }} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% elif rule.protocol|lower == "icmp" %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% endif %}
+{% endif %}
+{% endfor %}
 
--A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
--A INPUT -p tcp -j REJECT --reject-with tcp-reset
--A INPUT -j REJECT --reject-with icmp-proto-unreachable
+{% for rule in iptables_filter_rules %}
+{% if rule.chain|lower == "output" %}
+{% if rule.protocol|lower == "tcp" or rule.protocol|lower == "udp" %}
+-A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} -s {{ rule.source_address|default("0.0.0.0/0") }} --sport {{ rule.source_port|default("0:65535") }} -d {{ rule.destination_address|default("0.0.0.0/0") }} --dport {{ rule.destination_port|default("0:65535") }} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% elif rule.protocol|lower == "icmp" %}
+-A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% endif %}
+{% endif %}
+{% endfor %}
+
+-A OUTPUT -p icmp --icmp-type redirect -j DROP
 
 COMMIT
 
 *nat
-:PREROUTING ACCEPT [0:0]
-{% if ansible_distribution != 'CentOS' %}
-:INPUT ACCEPT [0:0]
-{% endif %}
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
+:PREROUTING {{ iptables_nat_prerouting_policy|upper }} [0:0]
+:INPUT {{ iptables_nat_input_policy|upper }} [0:0]
+:OUTPUT {{ iptables_nat_output_policy|upper }} [0:0]
+:POSTROUTING {{ iptables_nat_postrouting_policy|upper }} [0:0]
 
 -A PREROUTING -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-
-{% for port_forward in iptables_port_forward_rules %}
-{% if port_forward.protocol == "tcp" %}
--A PREROUTING -i {{ port_forward.interface|default("eth0") }} -p tcp -m conntrack --ctstate NEW --dport {{ port_forward.port|default("0:65535") }} -j DNAT --to-destination {{ port_forward.to_ip }}:{{ port_forward.to_port }}
+{% for rule in iptables_nat_rules %}
+{% if rule.chain|lower == "prerouting" %}
+{% if rule.protocol|lower == "tcp" or rule.protocol|lower == "udp" %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} -s {{ rule.source_address|default("0.0.0.0/0") }} --sport {{ rule.source_port|default("0:65535") }} -d {{ rule.destination_address|default("0.0.0.0/0") }} --dport {{ rule.destination_port|default("0:65535") }} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j DNAT --to-destination {{ rule.to_destination }}{% if rule.to_port is defined -%}:{{ rule.to_port }}{%- endif %}
+{% elif rule.protocol|lower == "icmp" %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j DNAT --to-destination {{ rule.to_destination }}
 {% endif %}
-{% if port_forward.protocol == "udp" %}
--A PREROUTING -i {{ port_forward.interface|default("eth0") }} -p udp -m conntrack --ctstate NEW --dport {{ port_forward.port|default("0:65535") }} -j DNAT --to-destination {{ port_forward.to_ip }}:{{ port_forward.to_port }}
 {% endif %}
-{% if port_forward.protocol == "any" %}
--A PREROUTING -i {{ port_forward.interface|default("eth0") }} -p tcp -m conntrack --ctstate NEW --dport {{ port_forward.port|default("0:65535") }} -j DNAT --to-destination {{ port_forward.to_ip }}:{{ port_forward.to_port }}
--A PREROUTING -i {{ port_forward.interface|default("eth0") }} -p udp -m conntrack --ctstate NEW --dport {{ port_forward.port|default("0:65535") }} -j DNAT --to-destination {{ port_forward.to_ip }}:{{ port_forward.to_port }}
-{% endif %}
-
 {% endfor %}
 
--A POSTROUTING -j MASQUERADE
+{% for rule in iptables_nat_rules %}
+{% if rule.chain|lower == "input" %}
+{% if rule.protocol|lower == "tcp" or rule.protocol|lower == "udp" %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} -s {{ rule.source_address|default("0.0.0.0/0") }} --sport {{ rule.source_port|default("0:65535") }} -d {{ rule.destination_address|default("0.0.0.0/0") }} --dport {{ rule.destination_port|default("0:65535") }} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% elif rule.protocol|lower == "icmp" %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% for rule in iptables_nat_rules %}
+{% if rule.chain|lower == "output" %}
+{% if rule.protocol|lower == "tcp" or rule.protocol|lower == "udp" %}
+-A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} -s {{ rule.source_address|default("0.0.0.0/0") }} --sport {{ rule.source_port|default("0:65535") }} -d {{ rule.destination_address|default("0.0.0.0/0") }} --dport {{ rule.destination_port|default("0:65535") }} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% elif rule.protocol|lower == "icmp" %}
+-A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+{% endif %}
+{% endif %}
+{% endfor %}
+
+-A POSTROUTING -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+{% for rule in iptables_nat_rules %}
+{% if rule.chain|lower == "postrouting" %}
+{% if rule.protocol|lower == "tcp" or rule.protocol|lower == "udp" %}
+-A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} -s {{ rule.source_address|default("0.0.0.0/0") }} --sport {{ rule.source_port|default("0:65535") }} -d {{ rule.destination_address|default("0.0.0.0/0") }} --dport {{ rule.destination_port|default("0:65535") }} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j SNAT --to {{ rule.to_destination }}
+{% elif rule.protocol|lower == "icmp" %}
+-A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j SNAT --to {{ rule.to_destination }}
+{% endif %}
+{% endif %}
+{% endfor %}
 
 COMMIT

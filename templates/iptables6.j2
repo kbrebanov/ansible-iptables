@@ -1,8 +1,16 @@
 # {{ ansible_managed }}
 
 *filter
-:INPUT {{ iptables_input_policy }} [0:0]
-:FORWARD {{ iptables_forward_policy }} [0:0]
-:OUTPUT {{ iptables_output_policy }} [0:0]
+:INPUT {{ iptables6_filter_input_policy|upper }} [0:0]
+:FORWARD {{ iptables6_filter_forward_policy|upper }} [0:0]
+:OUTPUT {{ iptables6_filter_output_policy|upper }} [0:0]
+
+COMMIT
+
+*nat
+:PREROUTING {{ iptables6_nat_prerouting_policy|upper }} [0:0]
+:INPUT {{ iptables6_nat_input_policy|upper }} [0:0]
+:OUTPUT {{ iptables6_nat_output_policy|upper }} [0:0]
+:POSTROUTING {{ iptables6_nat_postrouting_policy|upper }} [0:0]
 
 COMMIT

@@ -1,20 +1,29 @@
 ---
 # defaults file for iptables
 
-iptables_input_policy: "DROP"
-iptables_forward_policy: "DROP"
-iptables_output_policy: "ACCEPT"
+iptables_filter_input_policy: drop
+iptables_filter_forward_policy: drop
+iptables_filter_output_policy: accept
 
-iptables6_input_policy: "DROP"
-iptables6_forward_policy: "DROP"
-iptables6_output_policy: "ACCEPT"
+iptables_filter_rules:
+  - chain: input
+    protocol: tcp
+    source_address: 0.0.0.0/0
+    destination_port: 22
+    comment: OpenSSH
 
-iptables_icmp_enabled: true
+iptables_nat_prerouting_policy: drop
+iptables_nat_input_policy: accept
+iptables_nat_output_policy: accept
+iptables_nat_postrouting_policy: drop
 
-iptables_rules:
-  - protocol: tcp
-    source_addresses: 0.0.0.0/0
-    port: 22
-    comment: "OpenSSH"
+iptables_nat_rules: []
 
-iptables_port_forward_rules: []
+iptables6_filter_input_policy: drop
+iptables6_filter_forward_policy: drop
+iptables6_filter_output_policy: accept
+
+iptables6_nat_prerouting_policy: drop
+iptables6_nat_input_policy: accept
+iptables6_nat_output_policy: accept
+iptables6_nat_postrouting_policy: drop
