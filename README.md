@@ -55,12 +55,12 @@ Install and configure iptables to disallow ICMP, allow OpenSSH and HTTP
       - chain: input
         protocol: tcp
         source_address: 0.0.0.0/0
-        port: 22
+        destination_port: 22
         comment: OpenSSH
       - chain: input
         protocol: tcp
         source_address: 0.0.0.0/0
-        port: 80
+        destination_port: 80
         comment: HTTP
   roles:
     - kbrebanov.iptables
