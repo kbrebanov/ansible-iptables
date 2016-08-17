@@ -11,11 +11,11 @@
 {% for rule in iptables_filter_rules %}
 {% if rule.chain|lower == "input" %}
 {% if rule.protocol|lower == "icmp" %}
--A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} -m conntrack --ctstate NEW {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {% endif -%} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {% endif -%} -m conntrack --ctstate NEW {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% elif rule.protocol|lower == "tcp" %}
--A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {%- endif %} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {%- endif %} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {%- endif %} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {%- endif %} --syn -m conntrack --ctstate NEW {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {% endif -%} -p {{ rule.protocol|lower }} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {% endif -%} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {% endif -%} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {% endif -%} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {% endif -%} --syn -m conntrack --ctstate NEW {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% else %}
--A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {%- endif %} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {%- endif %} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {%- endif %} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {%- endif %} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {%- endif %} -m conntrack --ctstate NEW {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {% endif -%} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {% endif -%} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {% endif -%} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {% endif -%} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {% endif -%} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {% endif -%} -m conntrack --ctstate NEW {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -24,9 +24,9 @@
 {% for rule in iptables_filter_rules %}
 {% if rule.chain|lower == "forward" %}
 {% if rule.protocol|lower == "icmp" %}
--A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {% endif -%} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {% endif -%} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% else %}
--A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {%- endif %} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {%- endif %} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {%- endif %} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {%- endif %} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {% endif -%} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {% endif -%} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {% endif -%} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {% endif -%} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {% endif -%} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {% endif -%} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -35,9 +35,9 @@
 {% for rule in iptables_filter_rules %}
 {% if rule.chain|lower == "output" %}
 {% if rule.protocol|lower == "icmp" %}
--A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {% endif -%} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% else %}
--A {{ rule.chain|upper }} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {%- endif %} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {%- endif %} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {%- endif %} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {%- endif %} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {% endif -%} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {% endif -%} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {% endif -%} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {% endif -%} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {% endif -%} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -54,9 +54,9 @@ COMMIT
 {% for rule in iptables_nat_rules %}
 {% if rule.chain|lower == "prerouting" %}
 {% if rule.protocol|lower == "icmp" %}
--A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} {% if rule.to_destination is defined -%} -j DNAT --to-destination {{ rule.to_destination }} {% else %} -j ACCEPT {%- endif %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {% endif -%} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} {% if rule.to_destination is defined -%} -j DNAT --to-destination {{ rule.to_destination }} {% else %} -j ACCEPT {% endif -%}
 {% else %}
--A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {%- endif %} {% if rule.source_addres is defined -%} -s {{ rule.source_address }} {%- endif %} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {%- endif %} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {%- endif %} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} {% if rule.to_destination is defined -%} -j DNAT --to-destination {{ rule.to_destination }}{% if rule.to_port is defined -%}:{{ rule.to_port }}{%- endif %} {% else %} -j ACCEPT {%- endif %}
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {% endif -%} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {% endif -%} {% if rule.source_addres is defined -%} -s {{ rule.source_address }} {% endif -%} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {% endif -%} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {% endif -%} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} {% if rule.to_destination is defined -%} -j DNAT --to-destination {{ rule.to_destination }}{% if rule.to_port is defined -%}:{{ rule.to_port }}{% endif -%} {% else %} -j ACCEPT {% endif -%}
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -64,9 +64,9 @@ COMMIT
 {% for rule in iptables_nat_rules %}
 {% if rule.chain|lower == "input" %}
 {% if rule.protocol|lower == "icmp" %}
--A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {% endif -%} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% else %}
--A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {%- endif %} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {%- endif %} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {%- endif %} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {%- endif %} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {%- endif %} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} {% if rule.in_interface is defined -%} -i {{ rule.in_interface }} {% endif -%} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {% endif -%} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {% endif -%} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {% endif -%} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {% endif -%} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -74,9 +74,9 @@ COMMIT
 {% for rule in iptables_nat_rules %}
 {% if rule.chain|lower == "output" %}
 {% if rule.protocol|lower == "icmp" %}
--A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {% endif -%} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% else %}
--A {{ rule.chain|upper }} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {%- endif %} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {%- endif %} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {%- endif %} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {%- endif %} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} -j ACCEPT
+-A {{ rule.chain|upper }} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {% endif -%} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {% endif -%} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {% endif -%} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {% endif -%} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {% endif -%} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} -j ACCEPT
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -85,9 +85,9 @@ COMMIT
 {% for rule in iptables_nat_rules %}
 {% if rule.chain|lower == "postrouting" %}
 {% if rule.protocol|lower == "icmp" %}
--A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} {% if rule.to_destination is defined -%} -j SNAT --to {{ rule.to_destination }} {% else %} -j ACCEPT {%- endif %}
+-A {{ rule.chain|upper }} -p {{ rule.protocol|lower }} {% if rule.icmp_type is defined -%} --icmp-type {{ rule.icmp_type }} {% endif -%} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} {% if rule.to_destination is defined -%} -j SNAT --to {{ rule.to_destination }} {% else %} -j ACCEPT {% endif -%}
 {% else %}
--A {{ rule.chain|upper }} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {%- endif %} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {%- endif %} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {%- endif %} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {%- endif %} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {%- endif %} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {%- endif %} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {%- endif %} {% if rule.to_destination is defined -%} -j SNAT --to {{ rule.to_destination }} {% else %} -j ACCEPT {%- endif %}
+-A {{ rule.chain|upper }} {% if rule.protocol is defined -%} -p {{ rule.protocol|lower }} {% endif -%} {% if rule.source_address is defined -%} -s {{ rule.source_address }} {% endif -%} {% if rule.source_port is defined -%} --sport {{ rule.source_port }} {% endif -%} {% if rule.destination_address is defined -%} -d {{ rule.destination_address }} {% endif -%} {% if rule.destination_port is defined -%} --dport {{ rule.destination_port }} {% endif -%} {% if rule.out_interface is defined -%} -o {{ rule.out_interface }} {% endif -%} {% if rule.comment is defined -%} -m comment --comment "{{ rule.comment }}" {% endif -%} {% if rule.to_destination is defined -%} -j SNAT --to {{ rule.to_destination }} {% else %} -j ACCEPT {% endif -%}
 {% endif %}
 {% endif %}
 {% endfor %}
