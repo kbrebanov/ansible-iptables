@@ -5,8 +5,8 @@
 :FORWARD {{ iptables_filter_forward_policy|upper }} [0:0]
 :OUTPUT {{ iptables_filter_output_policy|upper }} [0:0]
 
--A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 -A INPUT -i lo -j ACCEPT
+-A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 -A INPUT -m conntrack --ctstate INVALID -j DROP
 {% for rule in iptables_filter_rules %}
 {% if rule.chain|lower == "input" %}
@@ -31,6 +31,7 @@
 {% endif %}
 {% endfor %}
 
+-A OUTPUT -p icmp --icmp-type redirect -j DROP
 {% for rule in iptables_filter_rules %}
 {% if rule.chain|lower == "output" %}
 {% if rule.protocol|lower == "tcp" or rule.protocol|lower == "udp" %}
@@ -40,8 +41,6 @@
 {% endif %}
 {% endif %}
 {% endfor %}
-
--A OUTPUT -p icmp --icmp-type redirect -j DROP
 
 COMMIT
 
