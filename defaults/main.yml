@@ -12,10 +12,10 @@ iptables_filter_rules:
     destination_port: 22
     comment: OpenSSH
 
-iptables_nat_prerouting_policy: drop
+iptables_nat_prerouting_policy: accept
 iptables_nat_input_policy: accept
 iptables_nat_output_policy: accept
-iptables_nat_postrouting_policy: drop
+iptables_nat_postrouting_policy: accept
 
 iptables_nat_rules: []
 
@@ -23,7 +23,7 @@ iptables6_filter_input_policy: drop
 iptables6_filter_forward_policy: drop
 iptables6_filter_output_policy: accept
 
-iptables6_nat_prerouting_policy: drop
+iptables6_nat_prerouting_policy: accept
 iptables6_nat_input_policy: accept
 iptables6_nat_output_policy: accept
-iptables6_nat_postrouting_policy: drop
+iptables6_nat_postrouting_policy: accept
