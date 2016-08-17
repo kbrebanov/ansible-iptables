@@ -18,7 +18,7 @@ Role Variables
 | iptables_filter_input_policy     | drop                                                                                                  | IPv4 default filter input policy            |
 | iptables_filter_forward_policy   | drop                                                                                                  | IPv4 default filter forward policy          |
 | iptables_filter_output_policy    | accept                                                                                                | IPv4 default filter output policy           |
-| iptables_filter_rules            | [{protocol: tcp, source_address: 0.0.0.0/0, destination_port: 22, comment: OpenSSH, action: accept }] | Array of filter rules represented as hashes |
+| iptables_filter_rules            | [{protocol: tcp, source_address: 0.0.0.0/0, destination_port: 22, comment: OpenSSH, target: accept }] | Array of filter rules represented as hashes |
 | iptables_nat_prerouting_policy   | accept                                                                                                | IPv4 default nat prerouting policy          |
 | iptables_nat_input_policy        | accept                                                                                                | IPv4 default nat input policy               |
 | iptables_nat_output_policy       | accept                                                                                                | IPv4 default nat output policy              |
@@ -57,13 +57,13 @@ Install and configure iptables to disallow ICMP, allow OpenSSH and HTTP
         source_address: 0.0.0.0/0
         destination_port: 22
         comment: OpenSSH
-        action: accept
+        target: accept
       - chain: input
         protocol: tcp
         source_address: 0.0.0.0/0
         destination_port: 80
         comment: HTTP
-        action: accept
+        target: accept
   roles:
     - kbrebanov.iptables
 ```
@@ -78,12 +78,12 @@ Install and configure iptables with a port forward rule for HTTP
         source_address: 0.0.0.0/0
         destination_port: 80
         comment: HTTP
-        action: accept
+        target: accept
     iptables_nat_rules:
       - chain: prerouting
         protocol: tcp
         destination_port: 80
-        action: dnat
+        target: dnat
         to_destination: 192.168.1.54
         to_port: 8080
   roles:

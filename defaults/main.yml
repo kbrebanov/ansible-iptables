@@ -11,7 +11,7 @@ iptables_filter_rules:
     source_address: 0.0.0.0/0
     destination_port: 22
     comment: OpenSSH
-    action: accept
+    target: accept
 
 iptables_nat_prerouting_policy: accept
 iptables_nat_input_policy: accept
