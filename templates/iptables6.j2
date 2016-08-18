@@ -1,3 +1,4 @@
+#jinja2:trim_blocks: False
 # {{ ansible_managed }}
 
 *filter
@@ -9,7 +10,9 @@ COMMIT
 
 *nat
 :PREROUTING {{ iptables6_nat_prerouting_policy|upper }} [0:0]
+{%- if ansible_distribution|lower != 'centos' %}
 :INPUT {{ iptables6_nat_input_policy|upper }} [0:0]
+{%- endif %}
 :OUTPUT {{ iptables6_nat_output_policy|upper }} [0:0]
 :POSTROUTING {{ iptables6_nat_postrouting_policy|upper }} [0:0]
 
